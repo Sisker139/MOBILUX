@@ -1,0 +1,68 @@
+﻿@model MOBILUX.ViewModels.RegisterVM
+@{
+    ViewData["Title"] = "Đăng Ký";
+}
+
+<style>
+    .register-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh; /* Chiều cao để căn giữa */
+    }
+
+    .signup-form {
+        width: 100%;
+        max-width: 500px;
+        padding: 30px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .signup-form h2 {
+        margin-bottom: 20px;
+    }
+
+    .signup-form button {
+        margin-top: 20px;
+    }
+</style>
+
+<section id="form">
+    <div class="container register-container">
+        <div class="signup-form">
+            <h2>Đăng Ký thành viên mới!</h2>
+
+            <form asp-action="DangKy" method="post">
+                <div class="form-group">
+                    <input asp-for="HoTenKh" class="form-control" placeholder="Họ và Tên" />
+                    <span asp-validation-for="HoTenKh" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="Sdt" class="form-control" placeholder="Số điện thoại" />
+                    <span asp-validation-for="Sdt" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="MatKhau" class="form-control" placeholder="Mật khẩu" />
+                    <span asp-validation-for="MatKhau" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="DiaChi" class="form-control" placeholder="Địa chỉ" />
+                    <span asp-validation-for="DiaChi" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-warning">Đăng Ký</button>
+            </form>
+        </div>
+    </div>
+</section>

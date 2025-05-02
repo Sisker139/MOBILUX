@@ -1,0 +1,12 @@
+﻿
+<div class="container text-center">
+	<div class="logo-404">
+		<a asp-action="index" asp-controller="Home"><img src="images/home/mobiluxlogo.png" alt="" /></a>
+	</div>
+	<div class="content-404">
+		<img src="images/404/404.png" class="img-responsive" alt="" />
+		<p class="pd-4" danger">@TempData["Message"]</p>
+		<h1><b>OPPS!</b> Chúng tôi không thể tìm thấy trang bạn cần !</h1>
+		<h2><a asp-action ="index" asp-controller="Home">Trở lại Trang Chủ</a></h2>
+	</div>
+</div>

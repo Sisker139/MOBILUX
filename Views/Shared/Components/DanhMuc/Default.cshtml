@@ -1,0 +1,17 @@
+﻿@model IEnumerable<MOBILUX.ViewModels.DanhMucVM>
+
+<div class="brands_products">
+	<!--brands_products-->
+	<h2>Danh Mục</h2>
+	<div class="brands-name">
+		<ul class="nav nav-pills nav-stacked">
+			@foreach(var item in Model)
+			{
+			<li>
+				<a asp-controller="SanPham" asp-action="Index" asp-route-loai="@item.MaDanhMuc"> 
+					<span class="pull-right">@item.SoLuong</span>@item.TenDanhMuc</a>
+			</li>
+			}
+		</ul>
+	</div>
+</div><!--/brands_products-->
