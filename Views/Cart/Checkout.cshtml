@@ -9,8 +9,6 @@
         <div class="step-one">
             <h2 class="heading">TẠO ĐƠN HÀNG</h2>
         </div>
-
-        @* BẮT ĐẦU FORM *@
         @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post))
         {
             @Html.AntiForgeryToken()
@@ -32,10 +30,13 @@
                                 <input type="text" name="Sdt" placeholder="Số điện thoại" />
                             </div>
                             <div class="form-two">
-                                <div class="order-message">
+                                <div>
                                     <textarea name="GhiChu" placeholder="Ghi chú" rows="5"></textarea>
-                                    <label><input type="checkbox" name="giongkhachhang" checked /> Giống thông tin khách hàng</label>
+                                    <input type="hidden" name="giongkhachhang" value="false" />
+                                    <input type="checkbox" id="giongkhachhang" name="giongkhachhang" value="true" checked />
+                                    <label for="giongkhachhang">Giống thông tin khách hàng</label>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -107,6 +108,33 @@
                 </div>
             </div>
         }
-        @* KẾT THÚC FORM *@
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        const checkbox = document.getElementById("giongkhachhang");
+
+        checkbox.addEventListener('change', function () {
+            if (this.checked) {
+                fetch('/Cart/GetLoggedInCustomerInfo')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.querySelector('[name="HoTen"]').value = data.hoTenKh;
+                        document.querySelector('[name="DiaChi"]').value = data.diaChi;
+                        document.querySelector('[name="Email"]').value = data.email;
+                        document.querySelector('[name="Sdt"]').value = data.sdt;
+                    });
+            } else {
+                document.querySelector('[name="HoTen"]').value = "";
+                document.querySelector('[name="DiaChi"]').value = "";
+                document.querySelector('[name="Email"]').value = "";
+                document.querySelector('[name="Sdt"]').value = "";
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            checkbox.dispatchEvent(new Event('change'));
+        });
+    </script>
+}

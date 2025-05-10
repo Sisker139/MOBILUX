@@ -2521,3 +2521,14 @@ h2.title {
 }
 
 
+.status-wrapper {
+	margin-right: 10px; /* Cách nút trạng thái ra khỏi nút hủy */
+}
+
+.status-label {
+	font-size: 14px;
+	padding: 5px 10px;
+	min-width: 100px;
+	text-align: center;
+}
+

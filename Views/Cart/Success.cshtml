@@ -3,14 +3,13 @@
     ViewData["Title"] = "Success";
 }
 
-<div class="container-fluid py-5">
-    <div class="container py-5 text-center">
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <h1 class="display-1">Tạo Đơn Hàng Thành Công </h1>
-                <a class="btn border-secondary rounded-pill py-3 px-5" href="/">Go Back To Home</a>
-            </div>
-        </div>
-    </div>
+<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:70vh;">
+    <h1 style="font-size:6rem; font-weight:bold; color:green;">
+        Đơn hàng được tạo thành công
+    </h1>
+
+    <a asp-controller="Home" asp-action="Index"  style="margin-top:20px; font-size:3rem; text-decoration:none; color:#007bff;">
+        Trở về trang chủ
+    </a>
 </div>
 

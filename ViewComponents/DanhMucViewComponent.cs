@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MOBILUX.Data;
 using MOBILUX.ViewModels;
+using System.Linq;
 
 namespace MOBILUX.ViewComponents
 {
@@ -12,12 +13,17 @@ namespace MOBILUX.ViewComponents
 
 		public IViewComponentResult Invoke()
 		{
-			var data = db.DanhMucs.Select(dm => new DanhMucVM
-			{
-				MaDanhMuc = dm.MaDanhMuc,
-				TenDanhMuc = dm.TenDanhMuc,
-				SoLuong = dm.SanPhams.Count
-			});
+			var data = db.DanhMucs
+				.Where(dm => dm.TrangThai == "Hoạt động")  // ✅ Lọc trạng thái
+				.Select(dm => new DanhMucVM
+				{
+					MaDanhMuc = dm.MaDanhMuc,
+					TenDanhMuc = dm.TenDanhMuc,
+					SoLuong = dm.SanPhams.Count,
+					TrangThai = dm.TrangThai
+				})
+				.ToList();
+
 			return View(data);
 		}
 	}

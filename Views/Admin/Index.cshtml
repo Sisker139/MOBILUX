@@ -1,0 +1,60 @@
+﻿@model IEnumerable<MOBILUX.Data.SanPham>
+
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+    Layout = "_Layoutadmin";
+}
+
+<h2>Danh sách sản phẩm</h2>
+
+<a asp-action="Create" class="btn btn-primary">Tạo sản phẩm mới</a>
+<div style="max-height: 750px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 8px; background-color: #fff;">
+    <table class="table table-bordered table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Tên SP</th>
+                <th>Danh mục</th>
+                <th>Giá</th>
+                <th>Giảm giá</th>
+                <th>Hình ảnh</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sp in Model)
+            {
+                var isHidden = sp.TrangThai == "Hết hàng";
+                <tr>
+                    <td>@sp.TenSp</td>
+                    <td>@sp.MaDanhMucNavigation?.TenDanhMuc</td>
+                    <td>@(sp.Gia?.ToString("N0") ?? "0") VND</td>
+                    <td>@(sp.GiamGia?.ToString("N0") ?? "0") VND</td>
+
+
+                    <td>
+                        @if (!string.IsNullOrEmpty(sp.Hinh))
+                        {
+                            <img src="~/images/Phone/@sp.Hinh" width="100" />
+                        }
+                    </td>
+                    <td>@sp.TrangThai</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@sp.MaSp" class="btn btn-warning btn-sm">Sửa</a>
+                        <a asp-action="Details" asp-route-id="@sp.MaSp" class="btn btn-info btn-sm">Chi tiết</a>
+                        <form asp-action="ToggleStatus" asp-route-id="@sp.MaSp" method="post" style="display:inline;">
+                            @if (isHidden)
+                            {
+                                <button type="submit" class="btn btn-success btn-sm">Hiện</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-danger btn-sm">Ẩn</button>
+                            }
+                        </form>
+                        
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

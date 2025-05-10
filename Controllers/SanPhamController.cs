@@ -15,90 +15,62 @@ namespace MOBILUX.Controllers
 
 
 
-		//public IActionResult Index(int? loai, int page = 1)
-		//{
-		//	int pageSize = 9;
-		//	var sanPhams = db.SanPhams.AsQueryable();
+       
 
-		//	if (loai.HasValue)
-		//	{
-		//		sanPhams = sanPhams.Where(p => p.MaDanhMuc == loai.Value);
-		//	}
+        public IActionResult Index(int? loai, string searchTerm, int page = 1)
+        {
+            int pageSize = 9;
+            var sanPhams = db.SanPhams
+                .Include(p => p.MaDanhMucNavigation)
+                .Where(p => p.TrangThai == "Còn hàng")
+                .AsQueryable();
 
-		//	int totalItems = sanPhams.Count();
+            if (loai.HasValue)
+            {
+                sanPhams = sanPhams.Where(p => p.MaDanhMuc == loai.Value);
+            }
 
-		//	//var result = sanPhams.Select(p => new SanPhamVM
-		//	var paginatedHangHoas = sanPhams
-		//		.Skip((page - 1) * pageSize)
-		//		.Take(pageSize)
-		//		.Select(p => new SanPhamVM
-		//		{
-		//		MaSp = p.MaSp,
-		//		TenSp = p.TenSp,
-		//		DonGia = p.Gia ?? 0,
-		//		Hinh = p.Hinh ?? "",
-		//		MotaNgan = p.MoTaNgan ?? "",
-		//		TenDanhMuc = p.MaDanhMucNavigation.TenDanhMuc
-		//	})
-		//	.ToList();
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                sanPhams = sanPhams.Where(p => p.TenSp.Contains(searchTerm));
+            }
 
-		//	ViewBag.TotalProducts = sanPhams.Count();
+            int totalItems = sanPhams.Count();
 
-		//	var model = new PaginatedSanPhamVM
-		//	{
-		//		SanPhams = paginatedHangHoas,
-		//		CurrentPage = page,
-		//		TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
-		//	};
+            var paginatedHangHoas = sanPhams
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new SanPhamVM
+                {
+                    MaSp = p.MaSp,
+                    TenSp = p.TenSp,
+                    DonGia = p.Gia ?? 0,
+                    Hinh = p.Hinh ?? "",
+                    MotaNgan = p.MoTaNgan ?? "",
+                    TenDanhMuc = p.MaDanhMucNavigation.TenDanhMuc,
+                    //GiamGia = p.GiamGia ?? 0,
+                    //SoLuong = p.SoLuong ?? 0,
+                    //TrangThai = p.TrangThai ?? ""
+                })
+                .ToList();
 
-		//	return View(model);
-		public IActionResult Index(int? loai, string searchTerm, int page = 1)
-		{
-			int pageSize = 9;
-			var sanPhams = db.SanPhams.AsQueryable();
+            ViewBag.TotalProducts = totalItems;
+            ViewBag.SearchTerm = searchTerm;
 
-			// Lọc theo danh mục (nếu có)
-			if (loai.HasValue)
-			{
-				sanPhams = sanPhams.Where(p => p.MaDanhMuc == loai.Value);
-			}
+            var model = new PaginatedSanPhamVM
+            {
+                SanPhams = paginatedHangHoas,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+            };
 
-			// Lọc theo từ khóa tìm kiếm (nếu có)
-			if (!string.IsNullOrEmpty(searchTerm))
-			{
-				sanPhams = sanPhams.Where(p => p.TenSp.Contains(searchTerm));
-			}
+            return View(model);
+        }
 
-			int totalItems = sanPhams.Count();
 
-			var paginatedHangHoas = sanPhams
-				.Skip((page - 1) * pageSize)
-				.Take(pageSize)
-				.Select(p => new SanPhamVM
-				{
-					MaSp = p.MaSp,
-					TenSp = p.TenSp,
-					DonGia = p.Gia ?? 0,
-					Hinh = p.Hinh ?? "",
-					MotaNgan = p.MoTaNgan ?? "",
-					TenDanhMuc = p.MaDanhMucNavigation.TenDanhMuc
-				})
-				.ToList();
 
-			ViewBag.TotalProducts = sanPhams.Count();
-			ViewBag.SearchTerm = searchTerm; // Giữ lại giá trị ô tìm kiếm
 
-			var model = new PaginatedSanPhamVM
-			{
-				SanPhams = paginatedHangHoas,
-				CurrentPage = page,
-				TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
-			};
-
-			return View(model);
-		}
-
-		public IActionResult Detail(int id)
+        public IActionResult Detail(int id)
 		{
 			var data = db.SanPhams
 				.Include(p => p.MaDanhMucNavigation)

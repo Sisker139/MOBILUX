@@ -29,7 +29,7 @@ public partial class SanPham
 
     public int? SoLuong { get; set; }
 
-    public string? TrangThai { get; set; }
+    public string? TrangThai { get; set; } = "Còn hàng";
 
     public virtual ICollection<ChiTietHd> ChiTietHds { get; set; } = new List<ChiTietHd>();
 

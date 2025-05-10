@@ -1,0 +1,110 @@
+﻿@model IEnumerable<MOBILUX.Data.DonHang>
+@{
+    Layout = "_Layoutadmin";
+}
+
+<h2>Quản lý đơn hàng</h2>
+
+@foreach (var dh in Model)
+{
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <strong>Đơn hàng #@dh.MaDh</strong> - Ngày đặt: @dh.NgayTao.ToString("dd/MM/yyyy HH:mm")
+            </div>
+            <div>
+                @{
+                    string badgeClass = dh.TrangThai switch
+                    {
+                        "Đã xác nhận" => "badge bg-success",
+                        "Đã hủy" => "badge bg-danger",
+                        _ => "badge bg-warning text-dark"
+                    };
+                }
+                <div>
+                    <span class="@badgeClass">@dh.TrangThai</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <p><strong>Người đặt:</strong> @dh.TenNguoiDat</p>
+            <p><strong>Số điện thoại:</strong> @dh.MaKhNavigation?.Sdt</p>
+            <p><strong>Email:</strong> @dh.MaKhNavigation?.Email</p>
+            <p><strong>Giao tới:</strong> @dh.DiaChi</p>
+            <p><strong>Ghi chú:</strong> @dh.GhiChu</p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Hình ảnh</th>
+                        <th>Giá</th>
+                        <th>Giảm giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in dh.ChiTietHds)
+                    {
+                        <tr>
+                            <td>@item.MaSpNavigation.TenSp</td>
+                            <td>
+                                <img src="~/images/Phone/@item.MaSpNavigation.Hinh" alt="@item.MaSpNavigation.TenSp" width="60" />
+                            </td>
+                            <td>@(item.Gia?.ToString("N0") ?? "0") VND</td>
+                            <td>@(item.GiamGia?.ToString("N0") ?? "0") VND</td>
+                            <td>@item.SoLuong</td>
+                            <td>@(item.ThanhTien?.ToString("N0") ?? "0") VND</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <p class="text-end">
+                <strong>Tổng tiền:</strong> @(dh.Gia.ToString("N0") ?? "0") VND
+            </p>
+            @if (dh.TrangThai != "Đã xác nhận" && dh.TrangThai != "Đã hủy")
+            {
+                <form asp-action="XacNhanDH" asp-route-id="@dh.MaDh" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-success">Xác nhận đơn</button>
+                </form>
+                <form asp-action="HuyDH" asp-route-id="@dh.MaDh" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Hủy đơn</button>
+                </form>
+            }
+
+        </div>
+    </div>
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<button type="button" class="btn btn-primary btn-sm" id="btn-back-to-top">
+    ↑ Lên đầu trang
+</button>
+
+<style>
+    #btn-back-to-top {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        display: none;
+        z-index: 99;
+    }
+</style>
+
+<script>
+    window.onscroll = function() {
+        var btn = document.getElementById("btn-back-to-top");
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            btn.style.display = "block";
+        } else {
+            btn.style.display = "none";
+        }
+    };
+
+    document.getElementById("btn-back-to-top").addEventListener("click", function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>

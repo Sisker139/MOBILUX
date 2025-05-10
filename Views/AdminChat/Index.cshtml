@@ -1,0 +1,40 @@
+﻿<div class="container">
+    <div id="user-list"></div>
+    <div id="chat-messages"></div>
+</div>
+
+<script>
+    async function loadUsers() {
+        const response = await fetch('/Admin/AdminChat/GetUserContacts');
+        const users = await response.json();
+        const userList = document.getElementById('user-list');
+        userList.innerHTML = '';
+
+        users.forEach(user => {
+            const div = document.createElement('div');
+            div.innerHTML = `<button onclick="loadMessages(${user.id})">${user.name}</button>`;
+            userList.appendChild(div);
+        });
+    }
+
+    async function loadMessages(userId) {
+        const response = await fetch(`/Admin/AdminChat/GetMessages?userId=${userId}`);
+        const messages = await response.json();
+        const chatMessages = document.getElementById('chat-messages');
+        chatMessages.innerHTML = '';
+
+        messages.forEach(msg => {
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <div>
+                    <b>${msg.status}</b> - ${msg.messageText}
+                    <small>${new Date(msg.timestamp).toLocaleString()}</small>
+                </div>
+            `;
+            chatMessages.appendChild(div);
+        });
+    }
+
+    // Gọi hàm load
+    loadUsers();
+</script>
