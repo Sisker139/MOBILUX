@@ -44,11 +44,11 @@
 
                     <div class="row" style="margin-top:10px;">
                         <div class="col-sm-6">
-                            <strong>Total:</strong> @(dh.Gia.ToString("N0") ?? "0") VND
+                            <strong>Tổng Cộng:</strong> @(dh.Gia.ToString("N0") ?? "0") VND
                         </div>
                         <div class="col-sm-6 text-right">
                             <span class="status-wrapper">
-                                @if (dh.TrangThai == "Đã xác nhận")
+                                @if (dh.TrangThai == "Đã xác nhận" || dh.TrangThai == "Đã thanh toán")
                                 {
                                     <span class="btn btn-success btn-sm status-label">@dh.TrangThai</span>
                                 }
@@ -62,7 +62,7 @@
                                 }
                             </span>
 
-                            @if (dh.TrangThai != "Đã xác nhận" && dh.TrangThai != "Đã hủy")
+                            @if (dh.TrangThai != "Đã xác nhận" && dh.TrangThai != "Đã hủy" && dh.TrangThai != "Đã thanh toán")
                             {
                                 <span class="cancel-wrapper">
                                     <form asp-action="HuyDon" asp-route-id="@dh.MaDh" method="post" style="display:inline-block;">

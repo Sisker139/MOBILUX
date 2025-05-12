@@ -39,19 +39,17 @@
                         <div class="col-sm-6">
                             <div class="contactinfo">
                                 <ul class="nav nav-pills">
-                                    <li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
-                                    <li><a href="#"><i class="fa fa-envelope"></i> info@domain.com</a></li>
+                                    <li><a href="#"><i class="fa fa-phone"></i> 0869899019</a></li>
+                                    <li><a href="#"><i class="fa fa-envelope"></i> thi15062@gmail.com</a></li>
                                 </ul>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="social-icons pull-right">
                                 <ul class="nav navbar-nav">
-                                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                                    <li><a href="https://www.facebook.com/sisker139/"><i class="fa fa-facebook"></i></a></li>
+                                    <li><a href="https://github.com/Sisker139?tab=repositories"><i class="fa fa-github"></i></a></li>
+                                    
                                 </ul>
                             </div>
                         </div>
@@ -67,50 +65,57 @@
                             <div class="logo pull-left">
                                 <a asp-Controller="Home" asp-action="Index"><img src="~/images/home/mobiluxlogo.png" alt="" /></a>
                             </div>
-                            <div class="btn-group pull-right">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-                                        USA
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">Canada</a></li>
-                                        <li><a href="#">UK</a></li>
-                                    </ul>
-                                </div>
-
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-                                        DOLLAR
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">Canadian Dollar</a></li>
-                                        <li><a href="#">Pound</a></li>
-                                    </ul>
-                                </div>
-                            </div>
+                            
                         </div>
                         <div class="col-sm-8">
                             <div class="shop-menu pull-right">
                                 <ul class="nav navbar-nav">
-                                    <li><a href="#"><i class="fa fa-user"></i> Account</a></li>
-                                    <li><a asp-action="Index" asp-controller="Admin"><i class="fa fa-star"></i> Admin</a></li>
-                                    <li><a asp-controller ="KhachHang" asp-action="DonHangDaDat"><i class="fa fa-crosshairs"></i> Checkout</a></li>
-                                    <li><a asp-action="Index" asp-controller="Cart"><i class="fa fa-shopping-cart"></i> Cart</a></li>
-                                    <li><a asp-action="DangKy" asp-controller="KhachHang"><i class="fa fa-lock"></i> Login</a></li>
+                                    
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        if (User.IsInRole("customer"))
+                                        {
+                                                    <li><a asp-controller="KhachHang" asp-action="ThongTin"><i class="fa fa-user"></i>Thông tin</a></li>
+                                                    <li><a asp-controller ="KhachHang" asp-action="DonHangDaDat"><i class="fa fa-crosshairs"></i> Quản lý đơn hàng</a></li>
+                                            <li><a asp-action="Index" asp-controller="Cart"><i class="fa fa-shopping-cart"></i> Giỏ Hàng</a></li>
+                                        }
+                                        
+                                    }
+                                    
+                                    
+                                    
+                                    
+                                    
                                 </ul>
 
                                 <div class="top-link text-right" style="margin-top: 60px;">
 
                                     @if (User.Identity.IsAuthenticated)
                                     {
+                                        if (User.IsInRole("Admin") || User.IsInRole("staff"))
+                                        {
+                                           
+                                           <a asp-action="Index" asp-controller="Admin"><i class="fa fa-star" style="font-size: 14px; margin-left: 30px;"></i>Trang Admin</a>
+                                            <span class="text-white" style="font-size: 16px;">|</span>
+                                            <a asp-controller="Admin" asp-action="ThongTin"><i class="fa fa-user"></i>Thông tin</a>
+                                            <span class="text-white" style="font-size: 16px;">|</span>
+                                        }
+                                        
                                         <span class="text-white">Chào Mừng @Context.User.Identity.Name,</span>
                                         <a asp-Controller="Login" asp-action="DangXuat" class="text-white"><small class="text-white mx-2">Đăng Xuất</small></a>
+                                        
                                     }
                                     else
                                     {
-                                        <a asp-Controller="Login" asp-action="DangNhap" class="text-white"><i class="fa fa-lock"></i><small class="text-white mx-2"> Đăng Nhập</small></a>
+                                        <a asp-Controller="Login" asp-action="DangNhap" class="text-white" style="font-size: 14px; margin-right: 10px;">
+                                            <i class="fa fa-lock"></i><strong> Đăng Nhập</strong>
+                                        </a>
+                                        <span class="text-white" style="font-size: 16px;">|</span>
+                                        <a asp-Controller="KhachHang" asp-action="DangKy" class="text-white" style="font-size: 14px; margin-left: 10px;">
+                                            <i class="fa fa-user-plus"></i><strong>Đăng Ký</strong>
+                                        </a>
+                                        
+                                       
                                     }
                                 </div>
                             </div>
@@ -138,7 +143,7 @@
                                         <a asp-controller="Home" asp-action="Index" class="nav-item nav-link active">Trang Chủ</a>
                                     </li>
                                     <li><a asp-controller="SanPham" asp-action="Index" class="nav-item nav-link active">Sản Phẩm</a></li>
-                                    <li class="dropdown">
+                                    @* <li class="dropdown">
                                         <a href="#">Danh mục<i class="fa fa-angle-down"></i></a>
                                         <ul role="menu" class="sub-menu">
                                             <li><a asp-controller="SanPham" asp-action="index" class="nav-item nav-link active">Sản Phẩm</a></li>
@@ -147,27 +152,19 @@
                                             <li><a href="cart.html">Cart</a></li>
                                             <li><a href="login.html">Login</a></li>
                                         </ul>
-                                    </li>
-                                    @* <li class="dropdown">
-                                    <a href="#">Blog<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
-                                    <li><a href="blog.html">Blog List</a></li>
-                                    <li><a href="blog-single.html">Blog Single</a></li>
-                                    </ul>
                                     </li> *@
-                                    @* <li><a href="404.html">404</a></li>
-                                    <li><a href="contact-us.html">Contact</a></li> *@
+                                    
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                       @*  <div class="col-sm-3">
                             <div class="search_box pull-right">
                                 <form asp-action="Index" method="get">
                                     <input type="text" name="searchTerm" placeholder="Search" value="@ViewBag.SearchTerm" />
                                     <button type="submit"><i class="fa fa-search"></i></button>
                                 </form>
                             </div>
-                        </div>
+                        </div> *@
 
                     </div>
                 </div>
@@ -176,6 +173,24 @@
         @RenderBody()
         @await Html.PartialAsync("_Footer")
     </div>
+
+     @if (User.Identity.IsAuthenticated)
+     {
+        if (User.IsInRole("customer"))
+        {
+           <div id="chat-popup" style="position: fixed; bottom: 70px; right: 30px; width: 350px; height: 500px; background: white; border: 1px solid #ccc; border-radius: 10px; display: none; flex-direction: column; z-index: 9999; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+            <div style="background: #1C77FF; color: white; padding: 10px; border-radius: 10px 10px 0 0;">hỗ trợ khách hàng <button onclick="toggleChat()" style="float:right; background:none; border:none; color:white;">✖</button></div>
+            <div id="chat-messages" style="flex:1; overflow-y: auto; padding: 10px; font-size: 14px;"></div>
+            <div style="padding: 10px; border-top: 1px solid #ccc;">
+            <input id="chat-input" type="text" placeholder="Viết tin nhắn..." style="width: 80%; padding:5px;" />
+            <button onclick="sendChatMessage()" style="padding:5px;">Gửi</button>
+            </div>
+            </div>
+
+            <button onclick="toggleChat()" style="position: fixed; bottom: 10px; right: 10px; background: #1C77FF; color: white; border-radius: 50%; width: 60px; height: 60px; border: none; font-size: 20px; z-index: 9999;">💬</button>
+        }
+     }
+    
 
 
 
@@ -188,3 +203,84 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+<script>
+    let chatVisible = false;
+
+    function toggleChat() {
+        chatVisible = !chatVisible;
+        document.getElementById("chat-popup").style.display = chatVisible ? "flex" : "none";
+        if (chatVisible) loadChatMessages();
+    }
+
+    async function loadChatMessages() {
+        try {
+            const res = await fetch('/customer/chat/history', {
+                credentials: 'include'
+            });
+
+            if (!res.ok) {
+                console.warn("Lỗi khi tải lịch sử chat:", res.status);
+                return;
+            }
+
+            const messages = await res.json();
+            const box = document.getElementById('chat-messages');
+            box.innerHTML = messages.map(m => {
+                const isAdmin = m.nguoiGui === "nhanvien";
+                const alignment = isAdmin ? "left" : "right";
+                const label = isAdmin ? "Admin" : "Khách";
+                const bgColor = isAdmin ? "#f0f0f0" : "#d6eaff";
+
+                const time = new Date(m.thoiGianGui).toLocaleString('vi-VN', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+
+                return `
+                    <div style="text-align: ${alignment}; margin: 8px 0;">
+                        <span style="display: inline-block; background: ${bgColor};
+                                    padding: 8px 12px; border-radius: 12px; max-width: 70%; font-size: 14px;">
+                            <b>${label}:</b> ${m.noiDung}<br>
+                            <small style="font-size: 11px; color: gray;">🕒 ${time}</small>
+                        </span>
+                    </div>`;
+            }).join('');
+
+            box.scrollTop = box.scrollHeight;
+        } catch (err) {
+            console.error("Lỗi mạng:", err);
+        }
+    }
+
+
+
+
+    async function sendChatMessage() {
+        const input = document.getElementById('chat-input');
+        const message = input.value.trim();
+        if (!message) return;
+
+        try {
+            const res = await fetch('/customer/chat/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ noiDung: message }),
+                credentials: 'include' // ✅ gửi cookie xác thực
+            });
+
+            if (!res.ok) {
+                console.warn("Gửi tin nhắn thất bại:", res.status);
+                return;
+            }
+
+            input.value = '';
+            loadChatMessages();
+        } catch (err) {
+            console.error("Lỗi gửi tin nhắn:", err);
+        }
+    }
+</script>
+

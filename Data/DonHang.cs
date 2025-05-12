@@ -38,4 +38,6 @@ public partial class DonHang
     public virtual NhanVien? MaNvNavigation { get; set; }
 
     public virtual SanPham? MaSpNavigation { get; set; }
+
+    public virtual ICollection<VnPay> VnPays { get; set; } = new List<VnPay>();
 }

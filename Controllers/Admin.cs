@@ -3,11 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using MOBILUX.Data;
 using MOBILUX.ViewModels;
 using MOBILUX.Helper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MOBILUX.Controllers
 {
+    [Authorize(Roles = "Admin,staff")]
     public class Admin : Controller
     {
+
         private readonly MobiluxContext db;
 
         public Admin(MobiluxContext context)
@@ -355,10 +358,116 @@ namespace MOBILUX.Controllers
             return RedirectToAction("QuanLyDH");
         }
 
+        public async Task<IActionResult> QuanLyKhachHang()
+        {
+            var khachHangs = await db.KhachHangs.ToListAsync();
+            return View(khachHangs);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(int id)
+        {
+            var khachHang = await db.KhachHangs.FindAsync(id);
+            if (khachHang == null)
+            {
+                return NotFound();
+            }
+
+            khachHang.MatKhau = "abcxyz"; // hoặc hash mật khẩu nếu đang mã hóa
+            await db.SaveChangesAsync();
+
+            TempData["Message"] = $"Mật khẩu của khách hàng '{khachHang.HoTenKh}' đã được đặt lại.";
+            return RedirectToAction(nameof(QuanLyKhachHang));
+        }
+
+        public async Task<IActionResult> QuanLyNhanVien()
+        {
+            var nhanViens = await db.NhanViens.ToListAsync();
+            return View(nhanViens);
+        }
 
 
+
+        [HttpPost]
+        public async Task<IActionResult> ResetMatKhau(int id)
+        {
+            var nv = await db.NhanViens.FindAsync(id);
+            if (nv == null)
+            {
+                return NotFound();
+            }
+
+            nv.MatKhau = "abcxyz"; // Bạn nên hash mật khẩu nếu hệ thống đang sử dụng bảo mật
+            await db.SaveChangesAsync();
+
+            TempData["Message"] = $"Mật khẩu của nhân viên {nv.TenNv} đã được đặt lại.";
+            return RedirectToAction(nameof(QuanLyNhanVien));
+        }
+
+
+
+
+
+
+
+        
+        public IActionResult ThongTin()
+        {
+            int manv = int.Parse(User.FindFirst(MySetting.CLAIM_STAFFID).Value);
+
+            var nv = db.NhanViens.FirstOrDefault(k => k.MaNv == manv);
+            if (nv == null)
+                return NotFound();
+
+            return View(nv);
+        }
+
+        
+        [HttpPost]
+        public IActionResult CapNhatThongTin(NhanVien model)
+        {
+            int manv = int.Parse(User.FindFirst(MySetting.CLAIM_STAFFID).Value);
+            var nv = db.NhanViens.FirstOrDefault(k => k.MaNv == manv);
+            if (nv == null) return NotFound();
+
+            // Cập nhật thông tin
+            nv.TenNv = model.TenNv;
+            
+
+            // Nếu có nhập mật khẩu mới thì cập nhật
+            if (!string.IsNullOrWhiteSpace(model.MatKhau))
+            {
+                nv.MatKhau = model.MatKhau;
+            }
+
+            db.SaveChanges();
+            TempData["Success"] = "Cập nhật thông tin thành công!";
+            return RedirectToAction("ThongTin");
+        }
+
+        [HttpGet]
+        public IActionResult ThemNhanVien()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ThemNhanVien(NhanVien nhanVien)
+        {
+            if (ModelState.IsValid)
+            {
+                nhanVien.Role = "staff";
+                nhanVien.MatKhau = "888999"; // Bạn có thể mã hoá nếu cần
+
+                db.Add(nhanVien);
+                await db.SaveChangesAsync();
+                TempData["Message"] = "Đã thêm nhân viên mới thành công.";
+                return RedirectToAction(nameof(QuanLyNhanVien));
+            }
+            return View(nhanVien);
+        }
     }
-
 
 
 }

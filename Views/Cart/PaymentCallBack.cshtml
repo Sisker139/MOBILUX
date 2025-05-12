@@ -1,0 +1,37 @@
+﻿
+@model MOBILUX.ViewModels.VnPaymentResponseModel
+
+@{
+    ViewData["Title"] = "Kết quả thanh toán";
+    var success = Model.VnPayResponseCode == "00" && Model.Success;
+}
+
+<div class="container mt-5">
+    <div class="card border-@((success ? "success" : "danger")) shadow">
+        <div class="card-body">
+            @if (success)
+            {
+                <div class="alert alert-success text-start">
+                    <h4>Thanh toán thành công!</h4>
+                    <p><strong>Mã đơn hàng:</strong> @Model.OrderId</p>
+                    <p><strong>Phương thức thanh toán:</strong> @Model.PaymentMethod</p>
+                    <p><strong>Thông điệp từ hệ thống:</strong> @Model.OrderDescription</p>
+                    <p><strong>Mã giao dịch:</strong> @Model.TransactionId</p>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger text-start">
+                    <h4>Thanh toán thất bại!</h4>
+                    <p><strong>Mã đơn hàng:</strong> @Model.OrderId</p>
+                    <p><strong>Phương thức thanh toán:</strong> @Model.PaymentMethod</p>
+                    <p><strong>Thông điệp từ hệ thống:</strong> @Model.OrderDescription</p>
+                    <p><strong>Mã giao dịch:</strong> @Model.TransactionId</p>
+                </div>
+            }
+            <a class="btn btn-primary mt-3" href="/">Quay lại trang chủ</a>
+        </div>
+    </div>
+</div>
+
+

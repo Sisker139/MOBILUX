@@ -26,8 +26,9 @@
                         <div class="bill-to">
                             <p>Liên Hệ</p>
                             <div class="form-one">
-                                <input type="text" name="Email" placeholder="Email" />
-                                <input type="text" name="Sdt" placeholder="Số điện thoại" />
+                                <input type="text" name="Email" placeholder="Email" readonly />
+                                <input type="text" name="Sdt" placeholder="Số điện thoại" readonly />
+
                             </div>
                             <div class="form-two">
                                 <div>
@@ -104,7 +105,10 @@
                     }
                     <h3>Tổng tiền: <strong>@tongTien.ToString("#,##0") VND</strong></h3>
 
-                    <button type="submit" class="btn btn-success" style="margin-top: 10px;"><h4>TẠO ĐƠN HÀNG</h4></button>
+                    <form asp-action="Checkout" method="post">
+                        <button type="submit" class="btn btn-success" style="margin-top: 10px;" value="Nhận tại quầy" name="payment"><h4>TẠO ĐƠN HÀNG</h4></button>
+                        <button type="submit" class="btn btn-success" style="margin-top: 10px;" value="Thanh toán VNPay" name="payment"><h4>THANH TOÁN VNPAY</h4></button>
+                    </form>
                 </div>
             </div>
         }
@@ -128,8 +132,8 @@
             } else {
                 document.querySelector('[name="HoTen"]').value = "";
                 document.querySelector('[name="DiaChi"]').value = "";
-                document.querySelector('[name="Email"]').value = "";
-                document.querySelector('[name="Sdt"]').value = "";
+                document.querySelector('[name="Email"]').value = data.email;
+                document.querySelector('[name="Sdt"]').value = data.sdt;
             }
         });
 

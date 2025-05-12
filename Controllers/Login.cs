@@ -44,17 +44,18 @@ namespace MOBILUX.Controllers
                     else
                     {
                         var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, nhanVien.TenNv),
-                    new Claim(MySetting.CLAIM_ROLE, nhanVien.Role),
-                    new Claim(ClaimTypes.Role, nhanVien.Role),
-                    new Claim(MySetting.CLAIM_STAFFID, nhanVien.MaNv.ToString())
-                };
+                        {
+                            new Claim(ClaimTypes.Name, nhanVien.TenNv),
+                            new Claim(MySetting.CLAIM_ROLE, nhanVien.Role),
+                            new Claim(ClaimTypes.Role, nhanVien.Role),
+                            new Claim(MySetting.CLAIM_STAFFID, nhanVien.MaNv.ToString())
+                        };
 
                         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+						HttpContext.Session.Remove(MySetting.CART_KEY);
 
-                        await HttpContext.SignInAsync(claimsPrincipal);
+						await HttpContext.SignInAsync(claimsPrincipal);
 
                         if (Url.IsLocalUrl(ReturnUrl))
                             return Redirect(ReturnUrl);
@@ -80,14 +81,15 @@ namespace MOBILUX.Controllers
                         else
                         {
                             var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, khachHang.HoTenKh),
-                        new Claim(MySetting.CLAIM_ROLE, khachHang.Role),
-                        new Claim(ClaimTypes.Role, khachHang.Role),
-                        new Claim(MySetting.CLAIM_STAFFID, khachHang.MaKh.ToString())
-                    };
+                            {
+                                new Claim(ClaimTypes.Name, khachHang.HoTenKh),
+                                new Claim(MySetting.CLAIM_ROLE, khachHang.Role),
+                                new Claim(ClaimTypes.Role, khachHang.Role),
+                                new Claim(MySetting.CLAIM_STAFFID, khachHang.MaKh.ToString())
+                            };
+							HttpContext.Session.Remove(MySetting.CART_KEY);
 
-                            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+							var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
                             await HttpContext.SignInAsync(claimsPrincipal);

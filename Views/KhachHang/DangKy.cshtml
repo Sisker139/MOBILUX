@@ -1,68 +1,86 @@
 ﻿@model MOBILUX.ViewModels.RegisterVM
 @{
     ViewData["Title"] = "Đăng Ký";
+    Layout = "_LayoutMain"; // Giữ layout tổng thể
 }
 
 <style>
-    .register-container {
+    .auth-wrapper {
+        min-height: calc(80vh - 160px);
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 50vh; /* Chiều cao để căn giữa */
     }
 
-    .signup-form {
+    .card-custom {
         width: 100%;
-        max-width: 500px;
-        padding: 30px;
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
+        max-width: 2000px;
+        border: 1px solid #dee2e6;
+        border-radius: 15px;
+        box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }
 
-    .signup-form h2 {
-        margin-bottom: 20px;
+    .img-left {
+        object-fit: cover;
+        height: 100%;
+        min-height: 420px;
     }
 
-    .signup-form button {
-        margin-top: 20px;
+    .form-control {
+        padding: 10px 12px;
     }
 </style>
 
-<section id="form">
-    <div class="container register-container">
-        <div class="signup-form">
-            <h2>Đăng Ký thành viên mới!</h2>
+<div class="container auth-wrapper">
+    <div class="card card-custom">
+        <div class="row g-0">
+            <!-- Ảnh bên trái -->
+            <div class="col-md-6 d-none d-md-block">
+                <img src="/images/Phone/anhnen1.jpg" class="w-100 h-100 img-left" alt="Watch Image" style="height: 100%; width: 100%;" />
+            </div>
 
-            <form asp-action="DangKy" method="post">
-                <div class="form-group">
-                    <input asp-for="HoTenKh" class="form-control" placeholder="Họ và Tên" />
-                    <span asp-validation-for="HoTenKh" class="text-danger"></span>
+            <!-- Form bên phải -->
+            <div class="col-md-6 bg-white p-5">
+                <div class="mx-auto" style="max-width: 500px;">
+                    <div class="mb-4 text-center">
+                        <h1>
+                            <span style="color: orange;">M</span><span style="color: gray;">OBILUX</span>
+                        </h1>
+
+                        <h3 class="fw-bold mb-3"></h3>
+                    </div>
+
+                    <form asp-action="DangKy" method="post">
+                        <div class="form-group mb-3">
+                            <input asp-for="HoTenKh" class="form-control" placeholder="Họ và Tên" />
+                            <span asp-validation-for="HoTenKh" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <input asp-for="Sdt" class="form-control" placeholder="Số điện thoại" />
+                            <span asp-validation-for="Sdt" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <input asp-for="MatKhau" class="form-control" placeholder="Mật khẩu" />
+                            <span asp-validation-for="MatKhau" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <input asp-for="Email" class="form-control" placeholder="Email" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <input asp-for="DiaChi" class="form-control" placeholder="Địa chỉ" />
+                            <span asp-validation-for="DiaChi" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100 py-2 fw-semibold">Đăng Ký</button>
+                    </form>
                 </div>
-
-                <div class="form-group">
-                    <input asp-for="Sdt" class="form-control" placeholder="Số điện thoại" />
-                    <span asp-validation-for="Sdt" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <input asp-for="MatKhau" class="form-control" placeholder="Mật khẩu" />
-                    <span asp-validation-for="MatKhau" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <input asp-for="Email" class="form-control" placeholder="Email" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <input asp-for="DiaChi" class="form-control" placeholder="Địa chỉ" />
-                    <span asp-validation-for="DiaChi" class="text-danger"></span>
-                </div>
-
-                <button type="submit" class="btn btn-warning">Đăng Ký</button>
-            </form>
+            </div>
         </div>
     </div>
-</section>
+</div>

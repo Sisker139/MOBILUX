@@ -42,6 +42,22 @@
                     <li class="nav-item">
                         <a class="nav-link text-white" asp-controller="Admin" asp-action="QuanLyDH">Quản lí đơn hàng</a>
                     </li>
+                    <li class="nav-item">
+                        <a asp-controller="AdminChat" asp-action="ViewChat" asp-route-maLh="1" class="nav-link text-white"> Quản lý tin nhắn</a>
+                    </li>
+                    
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Admin" asp-action="QuanLyKhachHang" class="nav-link text-white"> Quản lý Khách hàng</a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Admin" asp-action="QuanLyNhanVien" class="nav-link text-white"> Quản lý nhân viên</a>
+                            </li>
+                        }
+                    }
                 </ul>
             </div>
 

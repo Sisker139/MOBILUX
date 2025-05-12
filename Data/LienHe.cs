@@ -18,4 +18,8 @@ public partial class LienHe
     public string? TrangThai { get; set; }
 
     public virtual KhachHang MaKhNavigation { get; set; } = null!;
+
+	public virtual ICollection<TinNhanLienHe> TinNhans { get; set; } = new List<TinNhanLienHe>();
+
+
 }

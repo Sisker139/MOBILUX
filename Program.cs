@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MOBILUX.Data;
+using MOBILUX.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 	options.LoginPath = "/Login/DangNhap";
 	options.AccessDeniedPath = "/AccessDenied";
 });
+
+
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 builder.Services.AddSession(options =>
 {

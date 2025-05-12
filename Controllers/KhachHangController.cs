@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using MOBILUX.Data;
@@ -48,7 +49,7 @@ namespace MOBILUX.Controllers
 
 			return View(model);
 		}
-
+        [Authorize(Roles = "customer")]
         public IActionResult DonHangDaDat()
         {
             int maKh = int.Parse(User.FindFirst(MySetting.CLAIM_STAFFID).Value);
@@ -64,7 +65,7 @@ namespace MOBILUX.Controllers
 
             return View(donHangs);
         }
-
+        [Authorize(Roles = "customer")]
         [HttpPost]
         public IActionResult HuyDon(int id)
         {
@@ -82,5 +83,43 @@ namespace MOBILUX.Controllers
 
             return RedirectToAction("DonHangDaDat");
         }
+
+        [Authorize(Roles = "customer")]
+        public IActionResult ThongTin()
+        {
+            int maKh = int.Parse(User.FindFirst(MySetting.CLAIM_STAFFID).Value);
+
+            var kh = db.KhachHangs.FirstOrDefault(k => k.MaKh == maKh);
+            if (kh == null)
+                return NotFound();
+
+            return View(kh);
+        }
+
+        [Authorize(Roles = "customer")]
+        [HttpPost]
+        public IActionResult CapNhatThongTin(KhachHang model)
+        {
+            int maKh = int.Parse(User.FindFirst(MySetting.CLAIM_STAFFID).Value);
+            var kh = db.KhachHangs.FirstOrDefault(k => k.MaKh == maKh);
+            if (kh == null) return NotFound();
+
+            // Cập nhật thông tin
+            kh.HoTenKh = model.HoTenKh;
+            kh.Sdt = model.Sdt;
+            kh.Email = model.Email;
+            kh.DiaChi = model.DiaChi;
+
+            // Nếu có nhập mật khẩu mới thì cập nhật
+            if (!string.IsNullOrWhiteSpace(model.MatKhau))
+            {
+                kh.MatKhau = model.MatKhau;
+            }
+
+            db.SaveChanges();
+            TempData["Success"] = "Cập nhật thông tin thành công!";
+            return RedirectToAction("ThongTin");
+        }
+
     }
 }

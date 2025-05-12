@@ -1,0 +1,57 @@
+﻿@model IEnumerable<MOBILUX.Data.NhanVien>
+
+@{
+    ViewData["Title"] = "Quản lý nhân viên";
+    Layout = "_Layoutadmin";
+}
+
+<h2 class="mb-4">Quản lý Nhân viên</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div id="alertMessage" class="alert alert-success" role="alert">
+        @TempData["Message"]
+    </div>
+}
+<a asp-action="ThemNhanVien" class="btn btn-success mb-3">+ Thêm nhân viên</a>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Mã NV</th>
+            <th>Họ tên</th>
+            <th>Vai trò</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var nv in Model)
+        {
+            <tr>
+                <td>@nv.MaNv</td>
+                <td>@nv.TenNv</td>
+                <td>@nv.Role</td>
+                <td>
+                    <form asp-action="ResetMatKhau" asp-route-id="@nv.MaNv" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn đặt lại mật khẩu?');">
+                        <button type="submit" class="btn btn-warning btn-sm">Reset mật khẩu</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            var alert = document.getElementById('alertMessage');
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = '0';
+                setTimeout(function () {
+                    alert.remove();
+                }, 500);
+            }
+        }, 3000);
+    </script>
+}

@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "chat với admin";
+    Layout = "_LayoutMain";
+}
+<h3>Chat với nhân viên</h3>
+<div id="chat-box"></div>
+<input id="msg" type="text" />
+<button onclick="sendMsg()">Gửi</button>
+
+<script>
+    async function load() {
+      const res = await fetch('/customer/chat/history');
+      const messages = await res.json();
+      const box = document.getElementById('chat-box');
+      box.innerHTML = messages.map(m => `<div><b>${m.nguoiGui}:</b> ${m.noiDung}</div>`).join('');
+    }
+
+    async function sendMsg() {
+      const msg = document.getElementById('msg').value;
+      await fetch('/customer/chat/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ noiDung: msg })
+      });
+      document.getElementById('msg').value = '';
+      load();
+    }
+
+    load();
+</script>

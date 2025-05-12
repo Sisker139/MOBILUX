@@ -1,81 +1,98 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MOBILUX.Data;
+using MOBILUX.Helper;
 using System.Security.Claims;
 
 namespace MOBILUX.Controllers
 {
+    [Route("customer/chat")]
+    [Authorize(Roles = "customer")]
+
     public class CustomerChatController : Controller
     {
-        
-            private readonly MobiluxContext _context;
+        private readonly MobiluxContext _context;
 
-            public CustomerChatController(MobiluxContext context)
+        public CustomerChatController(MobiluxContext context)
+        {
+            _context = context;
+        }
+
+        [HttpPost("send")]
+        public async Task<IActionResult> SendMessage([FromBody] ChatMessageDto dto)
+        {
+            var userIdStr = User.FindFirstValue("StaffId");
+            if (!int.TryParse(userIdStr, out int userId)) return Unauthorized();
+
+            var khachHang = await _context.KhachHangs.FindAsync(userId);
+            if (khachHang == null) return NotFound();
+
+            var lienHe = await _context.LienHes.FirstOrDefaultAsync(l => l.MaKh == userId);
+            if (lienHe == null)
             {
-                _context = context;
-            }
-
-            public class SendMessageDto
-            {
-                public string MessageText { get; set; }
-            }
-
-            [HttpPost("send")]
-            public async Task<IActionResult> SendMessage([FromBody] SendMessageDto request)
-            {
-                if (request == null || string.IsNullOrWhiteSpace(request.MessageText))
-                    return BadRequest(new { error = "Tin nhắn không hợp lệ." });
-
-                var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (string.IsNullOrEmpty(userIdStr))
-                    return Unauthorized(new { error = "Bạn cần đăng nhập để gửi tin nhắn." });
-
-                if (!int.TryParse(userIdStr, out int userId))
-                    return BadRequest(new { error = "ID người dùng không hợp lệ." });
-
-                var khachHang = await _context.KhachHangs.FindAsync(userId);
-                if (khachHang == null)
-                    return NotFound(new { error = "Không tìm thấy khách hàng." });
-
-                var lienHe = new LienHe
+                lienHe = new LienHe
                 {
                     MaKh = userId,
                     Hoten = khachHang.HoTenKh,
-                    NoiDung = request.MessageText,
-                    NgayTao = DateTime.UtcNow,
-                    TrangThai = "Chưa trả lời"
+                    NgayTao = DateTime.Now,
+                    TrangThai = "Đang chat"
                 };
-
-                await _context.LienHes.AddAsync(lienHe);
+                _context.LienHes.Add(lienHe);
                 await _context.SaveChangesAsync();
-
-                return Ok(new { success = true });
             }
 
-            [HttpGet("get")]
-            public async Task<IActionResult> GetUserMessages()
+            var tinNhan = new TinNhanLienHe
             {
-                var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (string.IsNullOrEmpty(userIdStr))
-                    return Unauthorized(new { error = "Bạn cần đăng nhập." });
+                MaLh = lienHe.MaLh,
+                NguoiGui = "khachhang",
+                NoiDung = dto.NoiDung,
+                ThoiGianGui = DateTime.Now
+            };
 
-                if (!int.TryParse(userIdStr, out int userId))
-                    return BadRequest(new { error = "ID người dùng không hợp lệ." });
+            _context.TinNhanLienHes.Add(tinNhan);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
 
-                var messages = await _context.LienHes
-                    .Where(m => m.MaKh == userId)
-                    .OrderBy(m => m.NgayTao)
-                    .Select(m => new
-                    {
-                        id = m.MaLh,
-                        messageText = m.NoiDung,
-                        timestamp = m.NgayTao,
-                        status = m.TrangThai
-                    })
-                    .ToListAsync();
+        [HttpGet("history")]
+        public async Task<IActionResult> GetHistory()
+        {
+            var userIdStr = User.FindFirstValue(MySetting.CLAIM_STAFFID); // hoặc ClaimTypes.NameIdentifier nếu bạn dùng cái đó
+            if (!int.TryParse(userIdStr, out int userId))
+                return Unauthorized();
 
-                return Ok(messages);
-            
-            }
+            var lienHe = await _context.LienHes
+                .OrderByDescending(l => l.NgayTao)
+                .FirstOrDefaultAsync(l => l.MaKh == userId);
+
+            if (lienHe == null)
+                return Ok(new List<object>()); // Không có tin nhắn nào → trả mảng rỗng
+
+            var messages = await _context.TinNhanLienHes
+                .Where(x => x.MaLh == lienHe.MaLh)
+                .OrderBy(x => x.ThoiGianGui)
+                .Select(x => new {
+                    maLh = x.MaLh,
+                    nguoiGui = x.NguoiGui,
+                    noiDung = x.NoiDung,
+                    thoiGianGui = x.ThoiGianGui
+                })
+                .ToListAsync();
+
+            return Ok(messages);
+        }
+
+
+        [HttpGet("view")]
+        public IActionResult ViewChat()
+        {
+            return View("~/Views/CustomerChat/Index.cshtml");
+        }
+    }
+
+    public class ChatMessageDto
+    {
+        public string NoiDung { get; set; } = null!;
     }
 }

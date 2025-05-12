@@ -17,6 +17,7 @@
                     string badgeClass = dh.TrangThai switch
                     {
                         "Đã xác nhận" => "badge bg-success",
+                        "Đã thanh toán" => "badge bg-success",
                         "Đã hủy" => "badge bg-danger",
                         _ => "badge bg-warning text-dark"
                     };
@@ -64,7 +65,7 @@
             <p class="text-end">
                 <strong>Tổng tiền:</strong> @(dh.Gia.ToString("N0") ?? "0") VND
             </p>
-            @if (dh.TrangThai != "Đã xác nhận" && dh.TrangThai != "Đã hủy")
+            @if (dh.TrangThai != "Đã xác nhận" && dh.TrangThai != "Đã hủy" && dh.TrangThai != "Đã thanh toán")
             {
                 <form asp-action="XacNhanDH" asp-route-id="@dh.MaDh" method="post" class="d-inline">
                     <button type="submit" class="btn btn-success">Xác nhận đơn</button>
